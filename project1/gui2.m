@@ -89,7 +89,7 @@ function menu_file_open_Callback(hObject, eventdata, handles)
     global img;
     FullFileName = fullfile(PathName,FileName);
     img = tga_read_image(FullFileName);
-    disp(img)
+    disp(size(img));
     imshow(img);
 
 
