@@ -22,7 +22,7 @@ function varargout = gui2(varargin)
 
 % Edit the above text to modify the response to help gui2
 
-% Last Modified by GUIDE v2.5 21-Feb-2018 21:31:24
+% Last Modified by GUIDE v2.5 23-Feb-2018 11:29:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -109,3 +109,32 @@ function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
     C = get (gca, 'CurrentPoint');
     title(gca, ['(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')']);
+
+
+% --------------------------------------------------------------------
+function tools_Callback(hObject, eventdata, handles)
+% hObject    handle to tools (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function brush_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to brush_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function scissor_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to scissor_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    scissor;
+
+% --------------------------------------------------------------------
+function exit_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to exit_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    close;
