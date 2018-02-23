@@ -1,0 +1,19 @@
+classdef Node
+    properties(SetAccess = private, GetAccess = public)
+        linkCost
+        state
+        totalCost
+        prevNode
+        col
+        row
+    end
+end
+
+classdef NodeArray
+    properties 
+        length
+    end
+    methods 
+        function nodeArray = ObjectArray
+    
+        

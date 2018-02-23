@@ -1,30 +1,52 @@
-function LiveWireDP(seedCol,seedRow,graph)
-%initialize the priority queue pq to be empty
+function LiveWireDP(seedCol,seedRow,costGraph)
 
-%initialize each node to the INITIAL state
-[height,width,channel] = size(graph);
+%get dimension
+[height,width,channel] = size(costgraph);
+numOfNodes = (height/3) * (width/3);
+M(1:(height/3),1:(width/3)) = Inf;
 
-%construct and initialize nodes
-for row = 2:(height-1)
-    for cal = 2: (width-1)
-        num = (row-1)*width + col;
-        cost0 = calC(cal,row,col+1,row,graph);
-        cost1 = calC(cal,row,cal + 1, row + 1, graph);
-        cost2 = calC(cal,row, cal,row-1,graph);
-        cost3 = calC(cal,row,cal-1,row-1,graph);
-        cost4 = calC(cal,row,cal-1,row,graph);
-        cost5 = calC(cal,row,cal-1,row+1,graph);
-        cost6 = calC(cal,row,cal,row+1,graph);
-        cost7 = calC(cal,row,cal+1,row+1,graph);
-        node(num).linkCost = [cost0, cost1,cost2,cost3,cost4,cost5,cost6,cost7];
-        node(num).state = 'INITIAL';
-        node(num).totalCost = Inf;
-        %prevNode added later
-        node(num).col = col;
-        node(num).row = row;
+%initialize all nodes with totalCost = Inf
+nodeArray = Node(M);
+
+%initialize other properties
+for row = 1:(height/3)
+    for col = 1: (width/3)
+        %state initial/active/expanded: 0/1/2
+        nodeArray(row,col).state = 0;
+        nodeArray(row,col).prevNode = [row,col];
+        nodeArray(row,col).row = row;
+        nodeArray(row,col).col = col;
+        %pos in cost graph
+        posRow = 3*(row-1) + 2;
+        posCol = 3*(cal-1) + 2;
+        cost0 = costGraph(posRow,posCol+1);
+        cost1 = costGraph(posRow-1,posCol+1);
+        cost2 = costGraph(posRow-1,posCol);
+        cost3 = costGraph(posRow-1,posCol-1);
+        cost4 = costGraph(posRow,posCol-1);
+        cost5 = costGraph(posRow+1,posCol-1);
+        cost6 = costGraph(posRow+1,posCol);
+        cost7 = costGraph(posRow+1,posCol+1);
+        nodeArray(linkCost) = [cost0, cost1,cost2,cost3,cost4,cost5,cost6,cost7];
     end
 end
-seedNum = (seedRow-1)*width + seedCol;
-node(seedNum).totalCost = 0;
-node(seedNum).prevNode = [seedCol,seedRow];
+
+%suppose input seed is cursor position in original img
+%initialize seed node
+seedCol = seedCol -1;
+seedRow = seedRow -1;
+nodeArray(seedRow,seedCol).totalCost = 0;
+
 %initialize empty priority queue
+pq = matlab.DiscreteEventSystem.queuePriority(Node,(height/3)*(width/3),totalCost,ascending);
+
+
+
+
+
+
+
+
+
+
+
