@@ -22,7 +22,7 @@ function varargout = gui2(varargin)
 
 % Edit the above text to modify the response to help gui2
 
-% Last Modified by GUIDE v2.5 23-Feb-2018 11:29:25
+% Last Modified by GUIDE v2.5 23-Feb-2018 14:26:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % UIWAIT makes gui2 wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.MainGUI);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -86,11 +86,11 @@ function menu_file_open_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     [FileName,PathName] = uigetfile('*.tga','Select the input image file');
-    global img;
     FullFileName = fullfile(PathName,FileName);
-    img = tga_read_image(FullFileName);
-    disp(size(img));
-    imshow(img);
+    handles.img = tga_read_image(FullFileName);
+    disp(size(handles.img));
+    imshow(handles.img);
+    guidata(hObject,handles);
 
 
 % --------------------------------------------------------------------
@@ -98,13 +98,12 @@ function menu_file_save_Callback(hObject, eventdata, handles)
 % hObject    handle to menu_file_save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    global img;
-    imwrite(img,'myImage.jpeg','JPEG');
+    imwrite(handles.img,'myImage.jpeg','JPEG');
 
 
 % --- Executes on mouse motion over figure - except title and menu.
-function figure1_WindowButtonMotionFcn(hObject, eventdata, handles)
-% hObject    handle to figure1 (see GCBO)
+function MainGUI_WindowButtonMotionFcn(hObject, eventdata, handles)
+% hObject    handle to MainGUI (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     C = get (gca, 'CurrentPoint');
@@ -130,7 +129,14 @@ function scissor_menu_Callback(hObject, eventdata, handles)
 % hObject    handle to scissor_menu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    scissor;
+scissor;
+
+
+ 
+ 
+
+
+
 
 % --------------------------------------------------------------------
 function exit_menu_Callback(hObject, eventdata, handles)
@@ -138,3 +144,22 @@ function exit_menu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     close;
+
+
+% --------------------------------------------------------------------
+function update_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to update_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% this function is used to check the status of scissor panel
+
+% get the handle of Gui1
+ h = findobj('Tag','ScissorPanel');
+ % if exists (not empty)
+ if ~isempty(h)
+    % get handles and other user-defined data associated to Gui1
+    % maybe you want to set the text in Gui2 with that from Gui1
+    data = guidata(h)
+
+ end
