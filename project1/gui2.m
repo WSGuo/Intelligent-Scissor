@@ -88,7 +88,8 @@ function menu_file_open_Callback(hObject, eventdata, handles)
     [FileName,PathName] = uigetfile('*.tga','Select the input image file');
     FullFileName = fullfile(PathName,FileName);
     handles.img = tga_read_image(FullFileName);
-    disp(size(handles.img));
+    [handles.height,handles.width,handles.channels]=size(handles.img);
+    disp([handles.height,handles.width,handles.channels]);
     imshow(handles.img);
     guidata(hObject,handles);
 

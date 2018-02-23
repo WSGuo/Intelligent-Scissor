@@ -1,5 +1,5 @@
 %calculate derivative of a link
-function yD = calD(x1,y1,x2,y2)
+function yD = calD(x1,y1,x2,y2,height,width)
 %diagonal
 if abs(x1-x2) == abs(y1-y2) == 1
     yD1 = abs(img(x1,y1,1)-img(x2,y2,1))/sqrt(2);
@@ -8,7 +8,7 @@ if abs(x1-x2) == abs(y1-y2) == 1
 
 %horizontal 
 elseif y1 == y2
-    if (y1 == 1 || y1 == 657)
+    if (y1 == 1 || y1 == height)
         error('no link on the edge')
     end
     yD1 = abs((img(x1,y1-1,1)+img(x2,y2-1,1))/2 - (img(x1,y1+1,1)+img(x2,y2+1,1))/2);
@@ -16,7 +16,7 @@ elseif y1 == y2
     yD3 = abs((img(x1,y1-1,3)+img(x2,y2-1,3))/2 - (img(x1,y1+1,3)+img(x2,y2+1,3))/2);
 %Vertical
 elseif x1 == x2
-    if (x1 == 1 || x1 == 500)
+    if (x1 == 1 || x1 == width)
         error('no link on the edge')
     end
     yD1 = abs((img(x1-1,y1, 1)+img(x2-1,y2,1))/2 - (img(x1+1,y1,1)+img(x2+1,y2,1))/2)
