@@ -1,3 +1,4 @@
+
 classdef PriorityQueue < handle
 
     properties (SetAccess = private)               
@@ -91,7 +92,22 @@ classdef PriorityQueue < handle
             value = obj.valueList{1};
 
         end
-
+        %add decreaseKey
+        function decreaseKey(obj,rowKey,colKey,newKey)
+            change = false;
+            for iter = 1:obj.numElements
+                curNode = obj.valueList{iter};
+                if curNode.row == rowKey && curNode.col == colKey
+                    obj.priorityList{iter} = newKey;
+                    obj.swim(iter);
+                    change = true;
+                end
+            end
+            %for debug
+            if change == false
+                error('node not in pq');
+            end
+        end
     end    
     methods (Access = private)
 

@@ -13,7 +13,7 @@ for row = 1:(height/3)
     for col = 1: (width/3)
         %state initial/active/expanded: 0/1/2
         nodeArray(row,col).state = 0;
-        nodeArray(row,col).prevNode = [row,col];
+        nodeArray(row,col).prevNode = nodeArray(row,col);
         nodeArray(row,col).row = row;
         nodeArray(row,col).col = col;
         %pos in cost graph
@@ -38,7 +38,55 @@ seedRow = seedRow -1;
 nodeArray(seedRow,seedCol).totalCost = 0;
 
 %initialize empty priority queue
-pq = matlab.DiscreteEventSystem.queuePriority(Node,(height/3)*(width/3),totalCost,ascending);
+pq = PriorityQueue;
+pq.insert(nodeArray(seedRow,seedCol).totalCost,nodeArray(seedRow,seedCol));
+while pq.numElements ~= 0
+    %pop top node and its totalCost value
+    [costOut,nodeOut] = pq.pop();
+    rowOut = nodeOut.row;
+    colOut = nodeOut.col;
+    nodeArray(rowOut,colOut).status = 2;
+    for r = rowOut-1:rowOut+1
+        for c = colOut-1:colOut+1
+           %calculate linkCostCur
+                if r == rowOut-1
+                    if c == colOut-1
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(3);
+                    elseif c == colOut
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(2);
+                    else
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(1);
+                    end   
+                elseif r == rowOut
+                    if c == colOut-1
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(4);
+                    else
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(0);
+                    end
+                else 
+                    if c == colOut-1
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(5);
+                    elseif c == colOut
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(6);
+                    else
+                        linkCostCur = nodeArray(rowOut,colOut).linkCost(7);
+                    end 
+                end
+            if nodeArray(r,c).status == 0
+                nodeArray(r,c).prevNode = nodeArray(rowOut,colOut);
+                nodeArray(r,c).totalCost = costOut+linkCostCur;
+                nodeArray(r,c).status = 1;
+                pq.insert(nodeArray(r,c).totalCost,nodeArray(r,c));
+            
+            elseif nodeArray(r,c).status == 1
+                if costOut+linkCostCur < nodeArray(r,c).totalCost
+                    nodeArray(r,c).prevNode = nodeArray(rowOut,colOut);
+                    pq.decreaseKey(r,c,costOut+linkCostCur);
+                end
+            end   
+        end
+    end
+end
 
 
 
