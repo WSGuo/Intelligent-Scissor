@@ -61,22 +61,12 @@ guidata(hObject, handles);
 % Initialize inter-UI data
 set(handles.ModeButtonGroup,'selectedobject',[]);
 set(handles.ScissorRangeButtonGroup,'selectedobject',[]);
-handles.WorkMode = 0;
-handles.DebugMode = 0;
-handles.image_only = 0;
-handles.image_with_contour = 0;
-handles.whole_image = 0;
-handles.brush_selection = 0;
-handles.pixel_nodes = 0;
-handles.cost_graph = 0;
-handles.path_tree = 0;
-handles.minimum_path = 0;
 
 guidata(hObject,handles); 
 
 
 % UIWAIT makes scissor wait for user response (see UIRESUME)
-% uiwait(handles.ScissorPanel);
+% uiwait(hObjectPanel);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -101,8 +91,8 @@ function image_only_Callback(hObject, eventdata, handles)
 
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
+
 
 % --- Executes on button press in image_with_contour.
 function image_with_contour_Callback(hObject, eventdata, handles)
@@ -113,7 +103,6 @@ function image_with_contour_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of image_with_contour
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
 
 % --- Executes on button press in pixel_nodes.
@@ -125,7 +114,6 @@ function pixel_nodes_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of pixel_nodes
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
 
 % --- Executes on button press in cost_graph.
@@ -137,7 +125,6 @@ function cost_graph_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of cost_graph
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
 
 % --- Executes on button press in whole_image.
@@ -149,7 +136,6 @@ function whole_image_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of whole_image
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
 
 % --- Executes on button press in brush_selection.
@@ -161,7 +147,6 @@ function brush_selection_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of brush_selection
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
 
 % --- Executes on button press in path_tree.
@@ -173,7 +158,6 @@ function path_tree_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of path_tree
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
 
 % --- Executes on button press in minimum_path.
@@ -185,7 +169,6 @@ function minimum_path_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of minimum_path
 handles.selectedMode = get(get(handles.ModeButtonGroup,'SelectedObject'), 'Tag');
 handles.selectedRange = get(get(handles.ScissorRangeButtonGroup,'SelectedObject'), 'Tag');
-
 guidata(hObject,handles);
 
 % --- Executes on button press in close.

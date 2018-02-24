@@ -1,3 +1,4 @@
+
 function varargout = gui2(varargin)
 % GUI2 MATLAB code for gui2.fig
 %      GUI2, by itself, creates a new GUI2 or raises the existing
@@ -22,7 +23,7 @@ function varargout = gui2(varargin)
 
 % Edit the above text to modify the response to help gui2
 
-% Last Modified by GUIDE v2.5 23-Feb-2018 14:26:57
+% Last Modified by GUIDE v2.5 23-Feb-2018 16:33:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +55,12 @@ function gui2_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for gui2
 handles.output = hObject;
+
+%initialization
+
+handles.contourVisible = 0;
+handles.Click = 0;
+handles.currentLineExist = 0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -87,10 +94,10 @@ function menu_file_open_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
     [FileName,PathName] = uigetfile('*.tga','Select the input image file');
     FullFileName = fullfile(PathName,FileName);
-    handles.img = tga_read_image(FullFileName);
-    [handles.height,handles.width,handles.channels]=size(handles.img);
-    disp([handles.height,handles.width,handles.channels]);
-    imshow(handles.img);
+  
+    handles.img = (tga_read_image(FullFileName));
+    %handles.img = imread(FullFileName);
+    image(handles.img);
     guidata(hObject,handles);
 
 
@@ -99,6 +106,7 @@ function menu_file_save_Callback(hObject, eventdata, handles)
 % hObject    handle to menu_file_save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
     imwrite(handles.img,'myImage.jpeg','JPEG');
 
 
@@ -109,6 +117,26 @@ function MainGUI_WindowButtonMotionFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
     C = get (gca, 'CurrentPoint');
     title(gca, ['(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')']);
+    if handles.contourVisible == 1
+        if handles.Click == 0 
+            % no seedpt yet,do nothing
+        else
+            % already has a seed pt
+            %todo
+            if handles.currentLineExist
+                delete(handles.currentLine);
+                handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)]);
+                
+            else
+                handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)]);
+                handles.currentLineExist = 1;
+            end
+        end
+    end
+    
+guidata(hObject,handles); 
+        
+    
 
 
 % --------------------------------------------------------------------
@@ -131,6 +159,7 @@ function scissor_menu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 scissor;
+guidata(hObject,handles);
 
 
  
@@ -145,6 +174,7 @@ function exit_menu_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     close;
+    
 
 
 % --------------------------------------------------------------------
@@ -154,13 +184,96 @@ function update_menu_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % this function is used to check the status of scissor panel
-
 % get the handle of Gui1
- h = findobj('Tag','ScissorPanel');
+
+ 
+
+
+h = findobj('Tag','ScissorPanel');
  % if exists (not empty)
- if ~isempty(h)
+if ~isempty(h)
+    data = guidata(h);
+    
     % get handles and other user-defined data associated to Gui1
     % maybe you want to set the text in Gui2 with that from Gui1
-    data = guidata(h)
 
- end
+    selectedMode = data.selectedMode;
+    selectedRange = data.selectedRange;
+
+    % start updating the image 
+    if strcmp(selectedMode,'image_only')
+        handles.contourVisible = 0;
+        image(handles.img)
+        
+
+    elseif strcmp(selectedMode,'image_with_contour')
+         handles.contourVisible = 1;
+    elseif strcmp(selectedMode,'pixel_nodes')
+        handles.contourVisible = 0;
+        % display the pixel_nodes
+        [height,width,chn] = size(handles.img);
+        pixel_node_graph = zeros((height-2)*3,(width-2)*3,3);
+        
+        for i = 2:(height-1)
+            for j = 2:(width-1)
+                new_x = 3*i-4;
+                new_y = 3*j-4;
+                pixel_node_graph (new_x,new_y,1:3)= handles.img(i,j,1:3);
+
+            end
+        end
+       image(uint8(pixel_node_graph));
+       zoom on;
+        
+    elseif strcmp(selectedMode,'cost_graph')
+        handles.contourVisible = 0;
+        [height,width,chn] = size(handles.img);
+        costgraph = calC(handles.img,2);
+        disp('done');
+        image(uint8(costgraph));
+        zoom on;
+        
+    elseif strcmp(selectedMode, 'path_tree')
+        handles.contourVisible = 0;
+        %todo
+    else 
+        %data.selecetedMode == 'minimum_path',todo
+    end
+end
+
+ guidata(hObject,handles);
+
+
+ 
+% --- Executes on mouse press over figure background, over a disabled or
+% --- inactive control, or over an axes background.
+function MainGUI_WindowButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to MainGUI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if handles.contourVisible == 1
+    %display the contour
+    
+    %fetch the mouse position first
+    C = get (gca, 'CurrentPoint');
+    if handles.Click == 0
+        % startingPt for contour
+        handles.seedX = C(1,1);
+        handles.seedY = C(1,2);
+        handles.Click = 1;
+        handles.StartSeedX = C(1,1);
+        handles.StartSeedY = C(1,2);
+    else
+        % middlept for the contour
+        handles.endX = C(1,1);
+        handles.endY = C(1,2);
+        line([handles.seedX,handles.endX],[handles.seedY,handles.endY]);
+        handles.seedX = handles.endX;
+        handles.seedY = handles.endY;
+
+    end
+
+    
+end
+
+ guidata(hObject,handles);

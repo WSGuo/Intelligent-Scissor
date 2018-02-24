@@ -1,27 +1,39 @@
 %calculate derivative of a link
-function yD = calD(x1,y1,x2,y2,height,width)
-%diagonal
-if abs(x1-x2) == abs(y1-y2) == 1
-    yD1 = abs(img(x1,y1,1)-img(x2,y2,1))/sqrt(2);
-    yD2 = abs(img(x1,y1,2)-img(x2,y2,2))/sqrt(2);
-    yD3 = abs(img(x1,y1,3)-img(x2,y2,3))/sqrt(2);
+function yD = calD(x,y,img)
+[height,width,chn] = size(img);
 
-%horizontal 
-elseif y1 == y2
-    if (y1 == 1 || y1 == height)
-        error('no link on the edge')
-    end
-    yD1 = abs((img(x1,y1-1,1)+img(x2,y2-1,1))/2 - (img(x1,y1+1,1)+img(x2,y2+1,1))/2);
-    yD2 = abs((img(x1,y1-1,2)+img(x2,y2-1,2))/2 - (img(x1,y1+1,2)+img(x2,y2+1,2))/2);
-    yD3 = abs((img(x1,y1-1,3)+img(x2,y2-1,3))/2 - (img(x1,y1+1,3)+img(x2,y2+1,3))/2);
-%Vertical
-elseif x1 == x2
-    if (x1 == 1 || x1 == width)
-        error('no link on the edge')
-    end
-    yD1 = abs((img(x1-1,y1, 1)+img(x2-1,y2,1))/2 - (img(x1+1,y1,1)+img(x2+1,y2,1))/2)
-    yD2 = abs((img(x1-1,y1, 2)+img(x2-1,y2,2))/2 - (img(x1+1,y1,2)+img(x2+1,y2,2))/2)
-    yD3 = abs((img(x1-1,y1, 3)+img(x2-1,y2,3))/2 - (img(x1+1,y1,3)+img(x2+1,y2,3))/2)
-end
-yD = sqrt((yD1*yD1 + yD2*yD2 + yD3*yD3)/3);
+
+
+%link 0 
+yD_0 = abs(((double(img(x-1,y,1:3)))+(double(img(x-1,y+1,1:3))))/double(2) - ((double(img(x+1,y,1:3)))+(double(img(x+1,y+1,1:3))))/double(2))/double(2);
+yD(1) = sqrt(sum(yD_0.^2)/double(3));
+
+%link 1
+yD_1 = abs(double(img(x-1,y,1:3))-double(img(x,y+1,1:3)))/double(sqrt(2));
+yD(2) = sqrt(sum(yD_1.^2)/double(3));
+
+%link 2
+yD_2 = abs(((double(img(x,y-1,1:3)))+(double(img(x-1,y-1,1:3))))/double(2) - ((double(img(x,y+1,1:3)))+(double(img(x-1,y+1,1:3))))/double(2))/double(2);
+yD(3) = sqrt(sum(yD_2.^2)/double(3));
+
+%link 3
+yD_3 = abs(double(img(x-1,y,1:3))-double(img(x,y-1,1:3)))/double(sqrt(2));
+yD(4) = sqrt(sum(yD_3.^2)/double(3));
+
+%link 4
+yD_4 = abs(((double(img(x-1,y-1,1:3)))+(double(img(x-1,y,1:3))))/double(2) - ((double(img(x+1,y-1,1:3)))+(double(img(x+1,y,1:3))))/double(2))/double(2);
+yD(5) = sqrt(sum(yD_4.^2)/double(3));
+
+%link 5
+yD_5 = abs(double(img(x,y-1,1:3))-double(img(x+1,y,1:3)))/double(sqrt(2));
+yD(6) = sqrt(sum(yD_5.^2)/double(3));
+
+%link 6
+yD_6 = abs(((double(img(x,y-1,1:3)))+(double(img(x+1,y-1,1:3))))/double(2) - ((double(img(x,y+1,1:3)))+(double(img(x+1,y+1,1:3))))/double(2))/double(2);
+yD(7) = sqrt(sum(yD_6.^2)/double(3));
+
+%link 7 
+yD_7 = abs(double(img(x,y+1,1:3))-double(img(x+1,y,1:3)))/double(sqrt(2));
+yD(8) = sqrt(sum(yD_7.^2)/double(3));
+
 end
