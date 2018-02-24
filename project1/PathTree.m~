@@ -1,0 +1,60 @@
+%num: number of expanded node
+%row/col: row/col of seed
+%cGraph: cost graph
+%Show min path tree for current seed with num of expand node
+function pathTreeGraph = PathTree(num,row, col, cGraph)
+pathTreeGraph = cGraph;
+nodeMat = LiveWireDP(num, col, row, cGraph);
+[nodeMatHeight,nodeMatWidth] = size(nodeMat);
+
+%get max cost 
+costMax = 0
+for r = 1:nodeMatHeight
+    for c = 1: nodeMatWidth
+        if nodeMat(r,c).totalCost >costMax && nodeMat(r,c).state == 2 && nodeMat(r,c).totalCost ~= Inf
+            costMax = nodeMat(r,c).totalCost;
+            
+%color links between expanded nodes to yellow
+for r = 1:nodeMatHeight
+    for c = 1: nodeMatWidth
+        if nodeMat(r,c).state == 2 && nodeMat(r,c).state ~= 0
+            %color the link to yellow
+            rPrev = nodeMat(r,c).prevNode.row;
+            cPrev = nodeMat(r,c).prevNode.col;
+            %row/col InCostGraph
+            rowC = 3*(r-1)+2;
+            colC = 3*(c-1)+2;
+            if rPrev == r - 1
+                if cPrev == c + 1
+                    %type = 1;
+                    costGraph(rowC-1, colC+1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    costGraph(rowC-2, colC+2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                elseif cPrev == c
+                    %type = 2;
+                    costGraph(rowC-1, colC+1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    costGraph(rowC-2, colC+2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                else
+                    %type = 3;
+                end
+            elseif rPrev == r
+                if cPrev == c+1
+                    %type = 0;
+                else
+                    %type = 4;
+                end
+            else
+                if cPrev == c + 1
+                    %type = 7;
+                elseif cPrev == c
+                    %type = 6;
+                else
+                    %type = 5;
+                end
+            
+            
+                    
+                    
+        end
+    end
+end
+
