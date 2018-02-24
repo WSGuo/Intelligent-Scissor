@@ -51,7 +51,8 @@ while pq.numElements ~= 0
     colOut = nodeOut.col;
     nodeArray(rowOut,colOut).status = 2;
     count = count + 1;
-    if count <= numExp
+    %numExp= -1: no limit num of expand nodes
+    while (count <= numExp || numExp == -1)
         %for each neighbor node r of q  
         for r = rowOut-1:rowOut+1
             for c = colOut-1:colOut+1
