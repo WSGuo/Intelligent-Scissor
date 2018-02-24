@@ -1,4 +1,4 @@
-function nodeArray = LiveWirP(numExp, seedCol,seedRow,costGraph)
+function nodeArray = LiveWireDP(numExp, seedCol,seedRow,costGraph)
 
 %get dimension
 [height,width,channel] = size(costgraph);
