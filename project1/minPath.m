@@ -17,44 +17,44 @@ while cur.prevNode ~= 0
     if rPrev == r - 1
         if cPrev == c + 1
             %type = 1;
-            minPathGraph(rowC-1, colC+1) = [1,1,0];
-            minPathGraph(rowC-2, colC+2) = [1,1,0];
+            minPathGraph(rowC-1, colC+1, 1:3) = [1,1,0];
+            minPathGraph(rowC-2, colC+2, 1:3) = [1,1,0];
         elseif cPrev == c
             %type = 2;
-            minPathGraph(rowC-1, colC) = [1,1,0];
-            minPathGraph(rowC-2, colC) = [1,1,0];
+            minPathGraph(rowC-1, colC, 1:3) = [1,1,0];
+            minPathGraph(rowC-2, colC, 1:3) = [1,1,0];
         else
             %type = 3;
-            minPathGraph(rowC-1, colC-1) = [1,1,0];
-            minPathGraph(rowC-2, colC-2) = [1,1,0];
+            minPathGraph(rowC-1, colC-1, 1:3) = [1,1,0];
+            minPathGraph(rowC-2, colC-2, 1:3) = [1,1,0];
         end
     elseif rPrev == r
         if cPrev == c+1
             %type = 0;
-            minPathGraph(rowC, colC+1) = [1,1,0];
-            minPathGraph(rowC, colC+2) = [1,1,0];
+            minPathGraph(rowC, colC+1, 1:3) = [1,1,0];
+            minPathGraph(rowC, colC+2, 1:3) = [1,1,0];
             
         else
             %type = 4;
-            minPathGraph(rowC, colC-1) = [1,1,0];
-            minPathGraph(rowC, colC-2) = [1,1,0];
+            minPathGraph(rowC, colC-1, 1:3) = [1,1,0];
+            minPathGraph(rowC, colC-2, 1:3) = [1,1,0];
             
         end
     else
         if cPrev == c + 1
             %type = 7;
-            minPathGraph(rowC+1, colC+1) = [1,1,0];
-            minPathGraph(rowC+2, colC+2) = [1,1,0];
+            minPathGraph(rowC+1, colC+1, 1:3) = [1,1,0];
+            minPathGraph(rowC+2, colC+2, 1:3) = [1,1,0];
             
         elseif cPrev == c
             %type = 6;
-            minPathGraph(rowC+1, colC) = [1,1,0];
-            minPathGraph(rowC+2, colC) = [1,1,0];
+            minPathGraph(rowC+1, colC, 1:3) = [1,1,0];
+            minPathGraph(rowC+2, colC, 1:3) = [1,1,0];
             
         else
             %type = 5;
-            minPathGraph(rowC+1, colC-1) = [1,1,0];
-            minPathGraph(rowC+2, colC-2) = [1,1,0];
+            minPathGraph(rowC+1, colC-1, 1:3) = [1,1,0];
+            minPathGraph(rowC+2, colC-2, 1:3) = [1,1,0];
         end
     end
     cur = prev;

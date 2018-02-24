@@ -29,44 +29,44 @@ for r = 1:nodeMatHeight
             if rPrev == r - 1
                 if cPrev == c + 1
                     %type = 1;
-                    pathTreeGraph(rowC-1, colC+1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC-2, colC+2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC-1, colC+1, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC-2, colC+2, 1:3) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
                 elseif cPrev == c
                     %type = 2;
-                    pathTreeGraph(rowC-1, colC) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC-2, colC) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC-1, colC, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC-2, colC, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
                 else
                     %type = 3;
-                    pathTreeGraph(rowC-1, colC-1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC-2, colC-2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC-1, colC-1, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC-2, colC-2, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
                 end
             elseif rPrev == r
                 if cPrev == c+1
                     %type = 0;
-                    pathTreeGraph(rowC, colC+1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC, colC+2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC, colC+1, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC, colC+2, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
 
                 else
                     %type = 4;
-                    pathTreeGraph(rowC, colC-1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC, colC-2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC, colC-1, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC, colC-2, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
 
                 end
             else
                 if cPrev == c + 1
                     %type = 7;
-                    pathTreeGraph(rowC+1, colC+1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC+2, colC+2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC+1, colC+1, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC+2, colC+2, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
 
                 elseif cPrev == c
                     %type = 6;
-                    pathTreeGraph(rowC+1, colC) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC+2, colC) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC+1, colC, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC+2, colC, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
 
                 else
                     %type = 5;
-                    pathTreeGraph(rowC+1, colC-1) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
-                    pathTreeGraph(rowC+2, colC-2) = [(nodeMat(r,c).totalCost/costMax),(nodeMat(r,c).totalCost/costMax),0];
+                    pathTreeGraph(rowC+1, colC-1, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
+                    pathTreeGraph(rowC+2, colC-2, 1:3) = [(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,(nodeMat(r,c).totalCost/costMax)*0.5 + 0.5,0];
                 end
             end
         end
