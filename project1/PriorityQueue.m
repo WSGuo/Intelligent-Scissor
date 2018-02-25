@@ -101,6 +101,7 @@ classdef PriorityQueue < handle
                     obj.priorityList{iter} = newKey;
                     obj.swim(iter);
                     change = true;
+                    break;
                 end
             end
             %for debug
