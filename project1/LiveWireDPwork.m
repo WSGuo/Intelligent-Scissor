@@ -56,6 +56,7 @@ while ((flagEmpty == false) && (count <= numExp || numExp == -1))
     [costOut,nodeOut] = pop(pq);
     rowOut = nodeOut.row;
     colOut = nodeOut.col;
+
     if rowOut == curRow && colOut == curCol
         break;
     end
