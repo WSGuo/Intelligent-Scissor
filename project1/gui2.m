@@ -61,6 +61,11 @@ handles.output = hObject;
 handles.contourVisible = 0;
 handles.Click = 0;
 handles.currentLineExist = 0;
+handles.FirstClickPre = 0;
+handles.FollowingClickPre = 0;
+handles.finishCurCon = 0;
+handles.finishCurConClosed = 0;
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -96,8 +101,11 @@ function menu_file_open_Callback(hObject, eventdata, handles)
     FullFileName = fullfile(PathName,FileName);
   
     handles.img = (tga_read_image(FullFileName));
-    %handles.img = imread(FullFileName);
+    handles.costgraph = calC(handles.img,2);
     image(handles.img);
+    disp('cost grpah calculated');
+    %handles.img = imread(FullFileName);
+    
     guidata(hObject,handles);
 
 
@@ -117,19 +125,20 @@ function MainGUI_WindowButtonMotionFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
     C = get (gca, 'CurrentPoint');
     title(gca, ['(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')']);
-    if handles.contourVisible == 1
+    if ((handles.contourVisible)&& (~handles.finishCurCon)&&(~handles.finishCurConClosed))
         if handles.Click == 0 
             % no seedpt yet,do nothing
         else
             % already has a seed pt
-            %todo
-            if handles.currentLineExist
-                delete(handles.currentLine);
-                handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)]);
+            if (handles.FirstClickPre || handles.FollowingClickPre)
+                if handles.currentLineExist
+                    delete(handles.currentLine);
+                    handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)],'Color','white');
                 
-            else
-                handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)]);
-                handles.currentLineExist = 1;
+                else
+                    handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)],'Color','white');
+                    handles.currentLineExist = 1;
+                end
             end
         end
     end
@@ -140,7 +149,7 @@ guidata(hObject,handles);
 
 
 % --------------------------------------------------------------------
-function tools_Callback(hObject, eventdata, handles)
+function tools_Callback(~, eventdata, handles)
 % hObject    handle to tools (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -196,6 +205,7 @@ if ~isempty(h)
 
     selectedMode = data.selectedMode;
     selectedRange = data.selectedRange;
+    
 
     % start updating the image 
     if strcmp(selectedMode,'image_only')
@@ -224,19 +234,15 @@ if ~isempty(h)
         
     elseif strcmp(selectedMode,'cost_graph')
         handles.contourVisible = 0;
-        [height,width,chn] = size(handles.img);
-        costgraph = calC(handles.img,2);
-        disp('done');
-        image(uint8(costgraph));
+        image(uint8(handles.costgraph));
         zoom on;
         
     elseif strcmp(selectedMode, 'path_tree')
         %get cost graph first
+        input_nodes_num = data.input_nodes_num;
+        disp(input_nodes_num);
         handles.contourVisible = 0;
-        [height,width,chn] = size(handles.img);
-        costgraph = calC(handles.img,2);
-        disp('costgraph calculated');
-        pathTreeGraph = PathTree(100,100,100, costgraph);
+        pathTreeGraph = PathTree(input_nodes_num,handles.seedX-1,handles.seedY-1, handles.costgraph);
         image(uint8(pathTreeGraph));
         disp('path tree done');
         zoom on;
@@ -256,25 +262,35 @@ function MainGUI_WindowButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to MainGUI (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if handles.contourVisible == 1
+
+
+if ((handles.contourVisible) && (~handles.finishCurCon)&&(~handles.finishCurConClosed))
     %display the contour
     
     %fetch the mouse position first
     C = get (gca, 'CurrentPoint');
     if handles.Click == 0
+        disp('enter click')
+        if handles.FirstClickPre == 1
         % startingPt for contour
-        handles.seedX = int(C(1,1));
-        handles.seedY = int(C(1,2));
-        handles.Click = 1;
-        handles.StartSeedX = int(C(1,1));
-        handles.StartSeedY = int(C(1,2));
+            handles.seedX = int64(C(1,1));
+            handles.seedY = int64(C(1,2));
+            handles.Click = 1;
+            handles.StartSeedX = int64(C(1,1));
+            handles.StartSeedY = int64(C(1,2));
+            disp('set first click')
+        end
     else
+        if handles.FollowingClickPre == 1
         % middlept for the contour
-        handles.endX = int(C(1,1));
-        handles.endY = int(C(1,2));
-        line([handles.seedX,handles.endX],[handles.seedY,handles.endY]);
-        handles.seedX = handles.endX;
-        handles.seedY = handles.endY;
+            handles.endX = int64(C(1,1));
+            handles.endY = int64(C(1,2));
+            disp(handles.endX);
+            disp(handles.endY);
+            handles.lines = draw_lines(handles.seedX, handles.seedY, handles.endX, handles.endY,handles.costgraph);
+            handles.seedX = handles.endX;
+            handles.seedY = handles.endY;
+        end
 
     end
 
@@ -294,7 +310,7 @@ function MainGUI_KeyPressFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 modifiers = get(gcf,'currentModifier');
 key1 = get(gcf,'CurrentKey');
-%disp(eventdata.Key);
+disp(eventdata.Key);
 
 if(strcmp(key1,'equal')&&ismember('control',modifiers))
     %zoom in
@@ -304,4 +320,55 @@ if(strcmp(key1,'hyphen')&&ismember('control',modifiers))
     %zoom in
     zoom(0.8);
 end
+if(strcmp(key1,'leftarrow')&&ismember('control',modifiers))
+    %signal for first click preparation
+    handles.FirstClickPre = 1;
+    handles.finishCurCon = 0;
+    handles.finishCurConClosed = 0;
+    disp('FirstClickPre');
+end
+
+if(strcmp(key1,'leftarrow')&&handles.Click)
+    %signal for first click
+    handles.FollowingClickPre = 1;
+    handles.finishCurCon=0;
+    handles.finishCurConClosed = 0;
+    disp('Follwoing');
+end
+if(strcmp(key1,'return'))
+    disp('finished')
+    handles.finishCurCon = 1;
+    handles.FirstClickPre = 0;
+    handles.FollowingClickPre = 0;
+    handles.finishCurConClosed = 0;
+    handles.Click = 0;
+    % delete current mouse line
+    if handles.currentLineExist
+       delete(handles.currentLine);
+    end
+    %draw the last contour
+    C = get (gca, 'CurrentPoint');
+    handles.lines = draw_lines(handles.seedX, handles.seedY, int64(C(1,1)), int64(C(1,2)),handles.costgraph);
+    
+end
+if(strcmp(key1,'f')&&ismember('control',modifiers))
+% finish curcon as closed
+    disp('finish as closed')
+    handles.finishCurConClosed = 1;
+    
+    handles.FirstClickPre = 0;
+    handles.FollowingClickPre = 0;
+    handles.finishCurCon = 0;
+    handles.Click = 0;
+    % delete current mouse line
+    if handles.currentLineExist
+       delete(handles.currentLine);
+    end
+    % connect the StartSeed and endpt
+     handles.lines = draw_lines(handles.seedX, handles.seedY,handles.StartSeedX,handles.StartSeedY,handles.costgraph);
+
+end
+guidata(hObject,handles);
+
+
 
