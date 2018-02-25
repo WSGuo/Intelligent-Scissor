@@ -2,7 +2,7 @@
 %input are positions in original image
 function contourArray = contour(seedRow, seedCol, curRow, curCol,costGraph)
 disp('start calculate contour');
-nodeMat = LiveWireDP(-1, seedCol, seedRow, costGraph);
+nodeMat = LiveWireDPwork(-1, seedCol, seedRow, curCol, curRow, costGraph);
 cur = nodeMat(curRow-1, curCol-1);
 contourArray = [curRow curCol];
 while isa(cur.prevNode,'Node')
