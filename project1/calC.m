@@ -3,6 +3,8 @@ function costgraph = calC(img,costScale) % x col y row
 cost_height = (height-2)*3;
 cost_width = (width-2)*3;
 
+costgraph = zeros(cost_height,cost_width,3);
+
 DAll = calDAll(img);
 DMAX = max(DAll(:));
 DMAX

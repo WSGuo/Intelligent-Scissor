@@ -106,7 +106,7 @@ classdef PriorityQueue < handle
             end
             %for debug
             if change == false
-                error('decreaseKey: node not in pq');
+                error('node not in pq');
             end
         end
     end    

@@ -1,6 +1,6 @@
 function minPathGraph = minPath(seedRow,seedCol,curRow,curCol,cGraph)
 minPathGraph = cGraph;
-nodeMat = LiveWireDP(-1, seedCol, seedRow, cGraph);
+nodeMat = LiveWireDPwork(-1, seedCol, seedRow, curCol,curRow,cGraph);
 endNode = nodeMat(curRow-1,curCol-1);
 cur = endNode;
 while isa(cur.prevNode,'Node')

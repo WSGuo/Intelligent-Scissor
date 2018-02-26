@@ -10,7 +10,6 @@ M(:) = Inf;
 nodeArray = Node(M);
 
 %initialize other properties
-disp('initialize')
 for row = 1:(height/3)
     for col = 1: (width/3)
         %state initial/active/expanded: 0/1/2
@@ -32,7 +31,6 @@ for row = 1:(height/3)
         nodeArray(row,col).linkCost = [cost0, cost1,cost2,cost3,cost4,cost5,cost6,cost7];
     end
 end
-disp('finish initialize')
 
 %suppose input seed is cursor position in original img
 %initialize seed node
@@ -92,7 +90,6 @@ while ((flagEmpty == false) && (count <= numExp || numExp == -1))
                     elseif r == rowOut
                         if c == colOut-1
                             linkCostCur = nodeArray(rowOut,colOut).linkCost(5);
-                        %exclude itself
                         elseif c == colOut
                                 continue;
                         else

@@ -7,6 +7,7 @@ disp('start calculating LiveWireDP work mode');
 %initialize all nodes with totalCost = Inf
 M = zeros(height/3,width/3);
 M(:) = Inf;
+
 nodeArray = Node(M);
 
 %initialize other properties

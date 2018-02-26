@@ -65,7 +65,8 @@ handles.FirstClickPre = 0;
 handles.FollowingClickPre = 0;
 handles.finishCurCon = 0;
 handles.finishCurConClosed = 0;
-
+handles.numOfCon = 0;
+handles.numOfSeeds = 0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -133,15 +134,40 @@ function MainGUI_WindowButtonMotionFcn(hObject, eventdata, handles)
             if (handles.FirstClickPre || handles.FollowingClickPre)
                 if handles.currentLineExist
                     delete(handles.currentLine);
-                    handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)],'Color','white');
+                    handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)],'Color','red');
                 
                 else
-                    handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)],'Color','white');
+                    handles.currentLine = line([handles.seedX,C(1,1)],[handles.seedY,C(1,2)],'Color','red');
                     handles.currentLineExist = 1;
                 end
             end
         end
+    elseif (handles.contourVisible && ((handles.finishCurCon)||(handles.finishCurConClosed)))
+        % enable selection
+        for i = 1:handles.numOfCon
+            result = handles.lines(i).return_region;
+            maxX = result(1);
+            maxY = result(2);
+            minX = result(3);
+            minY = result(4);
+            handles.curSelected = 0;
+           
+            %disp(handles.lines(i));
+            if (C(1,1)>minX)&&(C(1,1)<maxX)&&(C(1,2)>minY)&&(C(1,2)<maxY)
+                handles.lines(i) = handles.lines(i).redraw_contour('red');
+                handles.lines(i).its_color = 1;
+                handles.curSelectedCon = handles.lines(i);
+                handles.curSelectedConIndex = i;
+                
+                handles.curSelected = 1;
+            elseif handles.lines(i).its_color == 1
+                handles.lines(i).redraw_contour('green');
+                handles.lines(i).its_color = 0;
+            end
+
+        end
     end
+        
     
 guidata(hObject,handles); 
         
@@ -210,11 +236,15 @@ if ~isempty(h)
     % start updating the image 
     if strcmp(selectedMode,'image_only')
         handles.contourVisible = 0;
-        image(handles.img)
+        image(handles.img);
+        dragzoom('off');
+        handles.Click = 0;
         
 
     elseif strcmp(selectedMode,'image_with_contour')
          handles.contourVisible = 1;
+         dragzoom('off');
+         
     elseif strcmp(selectedMode,'pixel_nodes')
         handles.contourVisible = 0;
         % display the pixel_nodes
@@ -230,24 +260,33 @@ if ~isempty(h)
             end
         end
        image(uint8(pixel_node_graph));
-       zoom on;
+       %zoom on;
         
     elseif strcmp(selectedMode,'cost_graph')
         handles.contourVisible = 0;
         image(uint8(handles.costgraph));
-        zoom on;
+        %zoom on;
         
     elseif strcmp(selectedMode, 'path_tree')
         %get cost graph first
         input_nodes_num = data.input_nodes_num;
         disp(input_nodes_num);
         handles.contourVisible = 0;
-        pathTreeGraph = PathTree(input_nodes_num,handles.seedX-1,handles.seedY-1, handles.costgraph);
+        disp('input for path tree');
+        disp(handles.seedX);
+        disp(handles.seedY);
+        pathTreeGraph = PathTree(input_nodes_num,handles.seedY-1,handles.seedX-1, handles.costgraph);
         image(uint8(pathTreeGraph));
         disp('path tree done');
-        zoom on;
+        %zoom on;
     else 
         %data.selecetedMode == 'minimum_path'
+        handles.contourVisible = 0;
+        minPathGraph = minPath(handles.bfenterY-1,handles.bfenterX-1,handles.seedY-1,handles.seedX-1,handles.costgraph);
+        image(uint8(minPathGraph));
+        disp('min path done');
+        
+        
         
     end
 end
@@ -263,7 +302,6 @@ function MainGUI_WindowButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
 if ((handles.contourVisible) && (~handles.finishCurCon)&&(~handles.finishCurConClosed))
     %display the contour
     
@@ -273,8 +311,13 @@ if ((handles.contourVisible) && (~handles.finishCurCon)&&(~handles.finishCurConC
         disp('enter click')
         if handles.FirstClickPre == 1
         % startingPt for contour
+            handles.curContour = contourCompleteObj;
             handles.seedX = int64(C(1,1));
             handles.seedY = int64(C(1,2));
+            handles.numOfSeeds = handles.numOfSeeds +1;
+            handles.seeds(handles.numOfSeeds,1) = handles.seedX;
+            handles.seeds(handles.numOfSeeds,2) = handles.seedY;
+
             handles.Click = 1;
             handles.StartSeedX = int64(C(1,1));
             handles.StartSeedY = int64(C(1,2));
@@ -285,11 +328,15 @@ if ((handles.contourVisible) && (~handles.finishCurCon)&&(~handles.finishCurConC
         % middlept for the contour
             handles.endX = int64(C(1,1));
             handles.endY = int64(C(1,2));
-            disp(handles.endX);
-            disp(handles.endY);
-            handles.lines = draw_lines(handles.seedX, handles.seedY, handles.endX, handles.endY,handles.costgraph);
+            this_conObj = contourObj(handles.seedX, handles.seedY, handles.endX, handles.endY,handles.costgraph);
+            handles.curContour = handles.curContour.insert(this_conObj);
             handles.seedX = handles.endX;
             handles.seedY = handles.endY;
+            
+            handles.numOfSeeds = handles.numOfSeeds +1;
+            handles.seeds(handles.numOfSeeds,1) = handles.seedX;
+            handles.seeds(handles.numOfSeeds,2) = handles.seedY;
+            
         end
 
     end
@@ -297,7 +344,7 @@ if ((handles.contourVisible) && (~handles.finishCurCon)&&(~handles.finishCurConC
     
 end
 
- guidata(hObject,handles);
+guidata(hObject,handles);
 
 
 % --- Executes on key press with focus on MainGUI and none of its controls.
@@ -315,10 +362,12 @@ disp(eventdata.Key);
 if(strcmp(key1,'equal')&&ismember('control',modifiers))
     %zoom in
     zoom(1.5);
+    dragzoom() ;
 end
 if(strcmp(key1,'hyphen')&&ismember('control',modifiers))
     %zoom in
     zoom(0.8);
+    dragzoom() ;
 end
 if(strcmp(key1,'leftarrow')&&ismember('control',modifiers))
     %signal for first click preparation
@@ -348,7 +397,27 @@ if(strcmp(key1,'return'))
     end
     %draw the last contour
     C = get (gca, 'CurrentPoint');
-    handles.lines = draw_lines(handles.seedX, handles.seedY, int64(C(1,1)), int64(C(1,2)),handles.costgraph);
+    handles.endX = int64(C(1,1));
+    handles.endY = int64(C(1,2));
+    
+    handles.numOfCon = handles.numOfCon +1;
+    handles.curContour = handles.curContour.insert(contourObj(handles.seedX, handles.seedY, handles.endX, handles.endY,handles.costgraph));
+    
+    handles.curContour.redraw_contour('green');
+    handles.lines(handles.numOfCon) = handles.curContour;
+
+    
+    handles.bfenterX = handles.seedX;
+    handles.bfenterY = handles.seedY;
+    
+    handles.seedX = handles.endX;
+    handles.seedY = handles.endY;
+    
+    handles.numOfSeeds = handles.numOfSeeds +1;
+    handles.seeds(handles.numOfSeeds,1) = handles.seedX;
+    handles.seeds(handles.numOfSeeds,2) = handles.seedY;
+    
+
     
 end
 if(strcmp(key1,'f')&&ismember('control',modifiers))
@@ -365,8 +434,50 @@ if(strcmp(key1,'f')&&ismember('control',modifiers))
        delete(handles.currentLine);
     end
     % connect the StartSeed and endpt
-     handles.lines = draw_lines(handles.seedX, handles.seedY,handles.StartSeedX,handles.StartSeedY,handles.costgraph);
+    handles.numOfCon = handles.numOfCon +1;
+    handles.curContour = handles.curContour.insert(contourObj(handles.seedX, handles.seedY,handles.StartSeedX,handles.StartSeedY,handles.costgraph));
+    handles.lines(handles.numOfCon) = handles.curContour;
+    
+    handles.curContour.redraw_contour('green');
+    
+    handles.numOfSeeds = handles.numOfSeeds +1;
+    handles.seeds(handles.numOfSeeds,1) = handles.StartSeedX;
+    handles.seeds(handles.numOfSeeds,2) = handles.StartSeedY;
 
+    
+end
+
+if(strcmp(key1,'space'))
+% finish curcon as closed
+    disp('delete mode')
+    
+    % delete current mouse line
+    if handles.currentLineExist
+       delete(handles.currentLine);
+       handles.currentLineExist = 0;
+    end
+    
+    if((~handles.finishCurConClosed)&&(~handles.finishCurCon))
+        % scissoring,delete the last seed
+        handles.numOfSeeds = handles.numOfSeeds-1;
+        handles.seedX = handles.seeds(handles.numOfSeeds,1);
+        handles.seedY = handles.seeds(handles.numOfSeeds,2);
+        % delete the corresponding contour
+        handles.curContour = handles.curContour.delete_last;
+    elseif(handles.curSelected)
+        disp('delete contour')
+        % delete the selected contour
+        handles.lines(handles.curSelectedConIndex) = handles.lines(handles.curSelectedConIndex).delete_contour;
+        %handles.curSelectedCon.delete_contour;
+        if(handles.curSelectedConIndex~=handles.numOfCon)
+            % exchange the deleted one with the last one
+            handles.lines(handles.curSelectedConIndex) = handles.lines(numOfCon);
+        end
+        
+        handles.numOfCon = handles.numOfCon - 1;
+    end
+    
+    
 end
 guidata(hObject,handles);
 

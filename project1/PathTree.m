@@ -6,6 +6,9 @@ function pathTreeGraph = PathTree(num,row, col, cGraph)
 pathTreeGraph = cGraph;
 nodeMat = LiveWireDP(num, col, row, cGraph);
 disp('start calculating PathTree');
+disp('input in path tree');
+disp(row);
+disp(col);
 [nodeMatHeight,nodeMatWidth] = size(nodeMat);
 
 %get max cost 
