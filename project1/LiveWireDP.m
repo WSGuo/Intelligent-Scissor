@@ -92,6 +92,7 @@ while ((flagEmpty == false) && (count <= numExp || numExp == -1))
                     elseif r == rowOut
                         if c == colOut-1
                             linkCostCur = nodeArray(rowOut,colOut).linkCost(5);
+                        %exclude itself
                         elseif c == colOut
                                 continue;
                         else

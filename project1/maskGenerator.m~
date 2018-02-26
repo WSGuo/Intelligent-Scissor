@@ -1,0 +1,7 @@
+function mask = maskGenerator(contour,imgHeight, imgWidth)
+mask = zeros(imgHeight,imgWidth,3);
+numOfRow = size(contour,1);
+for row  =1:numOfRow
+    pos = contour(numOfRow,:);
+    x = pos(1)
+    
