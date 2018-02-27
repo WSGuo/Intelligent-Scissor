@@ -471,7 +471,7 @@ if(strcmp(key1,'space'))
         %handles.curSelectedCon.delete_contour;
         if(handles.curSelectedConIndex~=handles.numOfCon)
             % exchange the deleted one with the last one
-            handles.lines(handles.curSelectedConIndex) = handles.lines(numOfCon);
+            handles.lines(handles.curSelectedConIndex) = handles.lines(handles.numOfCon);
         end
         
         handles.numOfCon = handles.numOfCon - 1;

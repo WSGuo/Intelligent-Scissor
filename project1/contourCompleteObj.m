@@ -18,11 +18,11 @@ classdef contourCompleteObj
             obj.contourObjList(obj.numOfcontourObj) = inputContourObj;
             disp('inserted:');
             disp(obj.numOfcontourObj);
-            disp(obj.contourObjList);
+            %disp(obj.contourObjList);
         end
         
          function obj = delete_contour(obj)
-             disp('start deleting contourObj');
+             disp('start deleting contourCompleteObj');
             for i = 1:obj.numOfcontourObj
                 disp(i);
                 obj.contourObjList(i) = obj.contourObjList(i).delete_lines;

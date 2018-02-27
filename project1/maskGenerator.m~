@@ -4,9 +4,8 @@ mask = zeros(imgHeight,imgWidth,3);
 
 %color contour
 numOfRow = size(contour,1);
-
-for row =1:numOfRow
-    pos = contour(row,:);
+for row  =1:numOfRow
+    pos = contour(numOfRow,:);
     x = pos(1);
     y = pos(2);
     %color the contour first
@@ -27,6 +26,7 @@ for row = 1: imgHeight
         elseif mask(row,col,1) == 255 && flag == 1
             flag = 0;
         end
-    end
+    
+
 end
     
