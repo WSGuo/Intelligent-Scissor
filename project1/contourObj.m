@@ -26,17 +26,28 @@ classdef contourObj
         end
         
         function obj = delete_lines(obj)
-            disp(obj.lines);
-            disp('start deleting lines in obj');
-            delete(obj.lines);
+            delete(obj.lines);      
         end
        
         function obj = redraw_lines(obj,color)
+           
+            disp('start deleting lines in contourobj');
+            %disp(obj.lines);
+            %disp(obj.lines(1));
+            disp(obj.lines(1).Color)
+            %disp(obj.lines(2).Color)
             %delete drawn lines
             delete(obj.lines);
+            disp('finish deleting lines in contourobj');
+            %disp(obj.lines);
+            
+            disp('redraw')
             for i = 1:obj.numOfLines
                 obj.lines(i) = line([obj.contourArray(i,1),obj.contourArray(i+1,1)],[obj.contourArray(i,2),obj.contourArray(i+1,2)],'Color',color);
             end
+            %disp(obj.lines);
+            %disp(obj.lines(1).Color)
+            disp(obj.lines(2).Color)
         end
     end
 end

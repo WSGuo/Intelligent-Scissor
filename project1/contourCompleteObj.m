@@ -18,11 +18,11 @@ classdef contourCompleteObj
             obj.contourObjList(obj.numOfcontourObj) = inputContourObj;
             disp('inserted:');
             disp(obj.numOfcontourObj);
-            disp(obj.contourObjList);
+           % disp(obj.contourObjList);
         end
         
          function obj = delete_contour(obj)
-             disp('start deleting contourObj');
+             disp('start deleting contourCompleteObj');
             for i = 1:obj.numOfcontourObj
                 disp(i);
                 obj.contourObjList(i) = obj.contourObjList(i).delete_lines;
@@ -48,6 +48,14 @@ classdef contourCompleteObj
             minY = min(obj.allpts(:,2));
             result = [maxX,maxY,minX,minY];
         end
+        
+         function result = return_allpts(obj)
+            for i = 1:obj.numOfcontourObj
+                obj.allpts = [obj.allpts;obj.contourObjList(i).contourArray];
+            end
+            result = obj.allpts;
+        end
+
 
     end
 end

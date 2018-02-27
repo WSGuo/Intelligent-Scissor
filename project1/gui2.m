@@ -23,7 +23,7 @@ function varargout = gui2(varargin)
 
 % Edit the above text to modify the response to help gui2
 
-% Last Modified by GUIDE v2.5 25-Feb-2018 15:52:58
+% Last Modified by GUIDE v2.5 27-Feb-2018 00:28:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -161,7 +161,7 @@ function MainGUI_WindowButtonMotionFcn(hObject, eventdata, handles)
                 
                 handles.curSelected = 1;
             elseif handles.lines(i).its_color == 1
-                handles.lines(i).redraw_contour('green');
+                handles.lines(i)=handles.lines(i).redraw_contour('green');
                 handles.lines(i).its_color = 0;
             end
 
@@ -385,7 +385,7 @@ if(strcmp(key1,'leftarrow')&&handles.Click)
     disp('Follwoing');
 end
 if(strcmp(key1,'return'))
-    disp('finished')
+    disp('finished, enter session')
     handles.finishCurCon = 1;
     handles.FirstClickPre = 0;
     handles.FollowingClickPre = 0;
@@ -403,9 +403,17 @@ if(strcmp(key1,'return'))
     handles.numOfCon = handles.numOfCon +1;
     handles.curContour = handles.curContour.insert(contourObj(handles.seedX, handles.seedY, handles.endX, handles.endY,handles.costgraph));
     
-    handles.curContour.redraw_contour('green');
+    disp('enter mode call redraw')
+    %disp('before redraw')
+    %disp(handles.curContour.contourObjList(1).lines(1));
+    handles.curContour = handles.curContour.redraw_contour('green');
+    
+    %disp('before')
+    %disp(handles.curContour.contourObjList(1).lines(1));
     handles.lines(handles.numOfCon) = handles.curContour;
-
+    %disp('after')
+    %disp(handles.lines(1).contourObjList(1).lines(1));
+    
     
     handles.bfenterX = handles.seedX;
     handles.bfenterY = handles.seedY;
@@ -418,7 +426,7 @@ if(strcmp(key1,'return'))
     handles.seeds(handles.numOfSeeds,2) = handles.seedY;
     
 
-    
+    disp('finished execute enter session')
 end
 if(strcmp(key1,'f')&&ismember('control',modifiers))
 % finish curcon as closed
@@ -436,9 +444,10 @@ if(strcmp(key1,'f')&&ismember('control',modifiers))
     % connect the StartSeed and endpt
     handles.numOfCon = handles.numOfCon +1;
     handles.curContour = handles.curContour.insert(contourObj(handles.seedX, handles.seedY,handles.StartSeedX,handles.StartSeedY,handles.costgraph));
-    handles.lines(handles.numOfCon) = handles.curContour;
     
-    handles.curContour.redraw_contour('green');
+    handles.curContour = handles.curContour.redraw_contour('green');
+    handles.lines(handles.numOfCon) = handles.curContour;
+
     
     handles.numOfSeeds = handles.numOfSeeds +1;
     handles.seeds(handles.numOfSeeds,1) = handles.StartSeedX;
@@ -482,4 +491,14 @@ end
 guidata(hObject,handles);
 
 
-
+% --------------------------------------------------------------------
+function save_mask_Callback(hObject, eventdata, handles)
+% hObject    handle to save_mask (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+allpts = handles.curContour.return_allpts;
+[height,width,chn] = size(handles.img);
+disp(allpts);
+mask = maskGenerator(allpts,height,width);
+image(mask);
+guidata(hObject,handles);
