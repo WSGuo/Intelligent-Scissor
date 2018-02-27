@@ -1,42 +1,44 @@
 function mask = maskGenerator(contour,imgHeight, imgWidth)
 %initialize the mask to 
-mask = zeros(imgHeight,imgWidth,3);
+mask1 = zeros(imgHeight,imgWidth);
 
 %color contour
 numOfRow = size(contour,1);
 
+xMax = 0;
+yMax = 0;
+xMin = imgWidth;
+yMin = imgHeight;
 for row =1:numOfRow
     pos = contour(row,:);
     x = pos(1);
     y = pos(2);
+    if x > xMax
+        xMax = x;
+    end
+    if y>yMax
+        yMax = y;
+    end
+    if x<xMin
+        xMin = x;
+    end
+    if y<yMin
+        yMin = y;
+    end
     %color the contour first
-    mask(y, x, 1:3) = 255;
+    mask1(y, x) = 1;
 end
 
-%color region in cotour to white 
-for row = 1: imgHeight
-    %flag 0 for black and 1 for white
-    flag = 0;
-    count = 0;
-    for col = 1:imgWidth
-        if mask(row,col,1) == 255
-            count = count + 1;
-        end
-    end 
-    if count > 1
-        for col = 1:imgWidth
-            if mask(row,col,1) == 0 && flag == 0
-                continue;
-            elseif mask(row,col) == 255 && flag == 0
-                flag = 1;
-            elseif mask(row,col,1) == 0 && flag == 1
-                mask(row,col,1:3) = 255;
-            elseif mask(row,col,1) == 255 && flag == 1
-                flag = 0;
-            end
-        end
+disp([xMin,xMax,yMin,yMax]);
+mask2 = zeros(imgHeight,imgWidth);
+for c = xMin:xMax
+    for r = yMin:yMax
+        mask2(r,c)=1;
     end
-end        
-    
+end
+
+mask = activecontour(mask1,mask2,200);
+%imshow(mask,'InitialMagnification','fit');
+
 end
     

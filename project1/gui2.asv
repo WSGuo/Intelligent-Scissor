@@ -115,7 +115,7 @@ function menu_file_save_Callback(hObject, eventdata, handles)
 % hObject    handle to menu_file_save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    imgWithCon = (handles.img);
+    imgWithCon = clone(handles.img);
     for i = 1:handles.numOfCon
         allpts = handles.lines(i).return_allpts;
         [n,m] = size(allpts);
@@ -129,8 +129,8 @@ function menu_file_save_Callback(hObject, eventdata, handles)
         
     end
     disp('image before storing');
-    image(uint8(imgWithCon));
-    imwrite(imgWithCon,'myImagewithCon.jpeg','JPEG');
+    image(uint8(imgWith));
+    imwrite(handles.img,'myImagewithCon.jpeg','JPEG');
 
 
 % --- Executes on mouse motion over figure - except title and menu.
