@@ -108,7 +108,23 @@ function menu_file_open_Callback(hObject, eventdata, handles)
         FullFileName = fullfile(PathName,FileName);
         handles.img = imread(FullFileName);
     end
-     handles.costgraph = calC(handles.img,2);
+    
+    blur = input('Please input whether the avg filter is applied: 0 for default, 1 for blurring\n');
+    if(blur)
+        %blur the image
+           filter_size = input('Please input the avg filter size : \n');
+           H = fspecial('average',filter_size);
+           handles.img = imfilter(handles.img,H);
+           disp('img after blurring');
+           image(handles.img);
+    end
+    
+     mode = input('Please input the cost function used: 0 for default ,1 for modified\n');
+     if(mode == 0)
+        handles.costgraph = calC(handles.img,2);
+     else
+         handles.costgraph = calC2(handles.img,2);
+     end
 
     image(handles.img);
     disp('cost grpah calculated');
