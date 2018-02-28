@@ -102,7 +102,14 @@ function menu_file_open_Callback(hObject, eventdata, handles)
     FullFileName = fullfile(PathName,FileName);
   
     handles.img = (tga_read_image(FullFileName));
-    handles.costgraph = calC(handles.img,2);
+    [height,width,chn] = size(handles.img);
+    if(chn~=3)
+        [FileName,PathName] = uigetfile('*.png','Select the input image file');
+        FullFileName = fullfile(PathName,FileName);
+        handles.img = imread(FullFileName);
+    end
+     handles.costgraph = calC(handles.img,2);
+
     image(handles.img);
     disp('cost grpah calculated');
     %handles.img = imread(FullFileName);
@@ -253,6 +260,14 @@ if ~isempty(h)
         image(handles.img);
         dragzoom('off');
         handles.Click = 0;
+        handles.contourVisible = 0;
+        handles.currentLineExist = 0;
+        handles.FirstClickPre = 0;
+        handles.FollowingClickPre = 0;
+        handles.finishCurCon = 0;
+        handles.finishCurConClosed = 0;
+        handles.numOfCon = 0;
+        handles.numOfSeeds = 0;
         
 
     elseif strcmp(selectedMode,'image_with_contour')
@@ -510,7 +525,12 @@ function save_mask_Callback(hObject, eventdata, handles)
 % hObject    handle to save_mask (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-allpts = handles.curContour.return_allpts;
+allpts = [];
+for i = 1:handles.numOfCon
+    return_pts = handles.lines(i).return_allpts
+    allpts = [allpts;return_pts];
+end
+%allpts = handles.curContour.return_allpts;
 [height,width,chn] = size(handles.img);
 %disp(allpts);
 mask = maskGenerator(allpts,height,width);
