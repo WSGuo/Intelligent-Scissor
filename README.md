@@ -1,2 +1,2 @@
-# COMP5421
+# Intelligent Scissor
 Computer Vision projects
